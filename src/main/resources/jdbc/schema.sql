@@ -1,0 +1,6 @@
+CREATE TABLE files (
+	id VARCHAR(64) PRIMARY KEY,
+	name VARCHAR(64) NOT NULL,
+	upload_time BIGINT NOT NULL,
+	size BIGINT NOT NULL
+);

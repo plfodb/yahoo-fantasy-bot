@@ -1,0 +1,7 @@
+/target/
+.classpath
+.settings
+.project
+.idea
+yahoo-fantasy-bot.iml
+src/main/resources/yahoo.properties

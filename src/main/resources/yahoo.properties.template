@@ -1,0 +1,8 @@
+client-id=<id>
+client-secret=<secret>
+redirect-uri=https://plfodb.com/yahoo/league
+authorization-uri=https://api.login.yahoo.com/oauth2/request_auth
+token-uri=https://api.login.yahoo.com/oauth2/get_token
+jwk-set-uri=https://api.login.yahoo.com/openid/v1/certs
+user-info-uri=https://api.login.yahoo.com/openid/v1/userinfo
+user-name-attribute=sub
