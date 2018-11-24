@@ -10,8 +10,8 @@ Substitute the dummy values in `src/main/resources/yahoo.properties.template` fo
 
 ## Current Endpoints
 
-`/yahoo/league` - returns the league name
-`/yahoo/transactions` - retrieves the last 20 transactions
+- `/yahoo/league` - returns the league name
+- `/yahoo/transactions` - retrieves the last 20 transactions
 
 ## TODO
 
