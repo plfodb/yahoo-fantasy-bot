@@ -1,4 +1,4 @@
-package com.pldfodb.model;
+package com.pldfodb.controller.model;
 
 import lombok.*;
 

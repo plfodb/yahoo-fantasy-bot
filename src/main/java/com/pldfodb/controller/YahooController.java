@@ -1,9 +1,11 @@
 package com.pldfodb.controller;
 
-import com.pldfodb.model.FantasyContentResource;
-import com.pldfodb.model.LeagueResource;
-import com.pldfodb.model.TransactionResource;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.pldfodb.controller.model.FantasyContentResource;
+import com.pldfodb.controller.model.LeagueResource;
+import com.pldfodb.controller.model.TransactionResource;
 import com.pldfodb.client.YahooClient;
+import com.pldfodb.repo.AuthenticationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -15,13 +17,13 @@ import java.util.List;
 @RequestMapping("/yahoo")
 public class YahooController {
 
-    @Autowired
-    private YahooClient client;
+    @Autowired private YahooClient client;
+    @Autowired private AuthenticationRepository authRepo;
 
-//    @RequestMapping("/login")
-//    public void login() {
-//        new RestTemplate();
-//    }
+    @RequestMapping("/login")
+    public void login() throws JsonProcessingException {
+        authRepo.updateToken(client.getAccessToken());
+    }
 
 //    @RequestMapping(value = "/authorization_code", method = RequestMethod.GET)
 //    public void setAuthorizationCode(@RequestParam("code") String code) {

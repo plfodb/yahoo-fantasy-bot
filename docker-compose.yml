@@ -1,0 +1,18 @@
+version: '3'
+services:
+  yahoo-fantasy-bot:
+    depends_on:
+     - postgres
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        JAR_FILE: target/yahoo-fantasy-bot-0.1.0-SNAPSHOT.jar
+    ports:
+     - "8080:8080"
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: plfodb
