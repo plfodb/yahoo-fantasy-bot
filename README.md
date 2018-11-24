@@ -3,10 +3,13 @@
 Substitute the dummy values in `src/main/resources/yahoo.properties.template` for real values, rename to `yahoo.properties`, then:
 `mvn clean install`
 
+## Build Docker Image
+
+`docker build . --build-arg JAR_FILE=target/yahoo-fantasy-bot-0.1.0-SNAPSHOT.jar`
+
 ## Run
 
-`cd target`
-`java -jar zip-service-0.1.0-SNAPSHOT.jar`
+`java -jar target/zip-service-0.1.0-SNAPSHOT.jar`
 
 ## Current Endpoints
 
