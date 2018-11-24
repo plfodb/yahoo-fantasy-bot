@@ -9,7 +9,7 @@ Substitute the dummy values in `src/main/resources/yahoo.properties.template` fo
 
 ## Run
 
-`java -jar target//yahoo-fantasy-bot-0.1.0-SNAPSHOT.jar`
+`java -jar target/yahoo-fantasy-bot-0.1.0-SNAPSHOT.jar`
 
 ## Current Endpoints
 
