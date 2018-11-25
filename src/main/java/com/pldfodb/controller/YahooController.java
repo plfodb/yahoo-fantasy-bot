@@ -8,7 +8,9 @@ import com.pldfodb.client.YahooClient;
 import com.pldfodb.repo.AuthenticationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,15 +22,12 @@ public class YahooController {
     @Autowired private YahooClient client;
     @Autowired private AuthenticationRepository authRepo;
 
-    @RequestMapping("/login")
-    public void login() throws JsonProcessingException {
-        authRepo.updateToken(client.getAccessToken());
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login(ModelMap map) throws JsonProcessingException {
+        OAuth2AccessToken token = client.login();
+        authRepo.updateToken(token);
+        return "yahoo-logged-in ";
     }
-
-//    @RequestMapping(value = "/authorization_code", method = RequestMethod.GET)
-//    public void setAuthorizationCode(@RequestParam("code") String code) {
-//        client.setAuthorizationCode();
-//    }
 
     @RequestMapping(value = "/league", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody LeagueResource getLeague() {

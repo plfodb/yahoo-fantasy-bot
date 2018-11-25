@@ -23,7 +23,7 @@ public class OpenIdFilter extends AbstractAuthenticationProcessingFilter {
             throws AuthenticationException, IOException, ServletException {
         OAuth2AccessToken accessToken;
 //        try {
-//            accessToken = restTemplate.getAccessToken();
+//            accessToken = restTemplate.login();
 //        } catch (OAuth2Exception e) {
 //            throw new BadCredentialsException("Could not obtain access token", e);
 //        }

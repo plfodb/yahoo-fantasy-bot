@@ -5,7 +5,7 @@
 </head>
 
 <body>
-    Welcome ${name}!!
+    Login Success
 </body>
 
 </html>
