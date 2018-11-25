@@ -11,13 +11,13 @@ import java.io.IOException;
 @Configuration
 public class ServiceConfig {
 
-    @Value("${slack.token}")
-    private String token;
-
-    @Bean
-    public SlackSession slackSession() throws IOException {
-        SlackSession session = SlackSessionFactory.getSlackSessionBuilder(token).build();
-        session.connect();
-        return session;
-    }
+//    @Value("${slack.token}")
+//    private String token;
+//
+//    @Bean
+//    public SlackSession slackSession() throws IOException {
+//        SlackSession session = SlackSessionFactory.getSlackSessionBuilder(token).build();
+//        session.connect();
+//        return session;
+//    }
 }
