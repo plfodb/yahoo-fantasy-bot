@@ -1,5 +1,6 @@
 package com.pldfodb.config;
 
+import com.pldfodb.client.LoggingRequestInterceptor;
 import com.pldfodb.oauth.ClientOnlyAuthorizationCodeDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -49,6 +50,8 @@ public class YahooOpenIdConfig {
 
     @Bean
     public OAuth2RestTemplate yahooOpenIdTemplate(OAuth2ClientContext clientContext) {
-        return new OAuth2RestTemplate(yahooOpenId(), clientContext);
+        OAuth2RestTemplate template = new OAuth2RestTemplate(yahooOpenId(), clientContext);
+        template.getInterceptors().add(new LoggingRequestInterceptor());
+        return template;
     }
 }

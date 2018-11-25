@@ -30,7 +30,7 @@ public class TransactionStateService {
 
     private static final int TRANSACTIONS_TO_FETCH = 20;
 
-    @PostConstruct
+//    @PostConstruct
     public void setup() {
         System.out.println("initializing oauth client from db");
         OAuth2AccessToken token = authRepo.getToken();
