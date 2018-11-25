@@ -5,7 +5,7 @@
                 @XmlNs(prefix="yahoo", namespaceURI="http://www.yahooapis.com/v1/base.rng")
         }
 )
-package com.pldfodb.model;
+package com.pldfodb.controller.model;
 
 import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlNsForm;

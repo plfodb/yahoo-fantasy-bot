@@ -1,4 +1,4 @@
-package com.pldfodb.model;
+package com.pldfodb.controller.model;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;

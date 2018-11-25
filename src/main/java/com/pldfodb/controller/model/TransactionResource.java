@@ -2,8 +2,6 @@ package com.pldfodb.controller.model;
 
 import com.pldfodb.model.Player;
 import com.pldfodb.model.Transaction;
-import com.pldfodb.model.TransactionSourceType;
-import com.pldfodb.model.TransactionType;
 import lombok.*;
 
 import javax.xml.bind.annotation.*;
