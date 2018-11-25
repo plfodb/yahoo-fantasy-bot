@@ -15,8 +15,13 @@ public class SlackController {
 
     @Autowired private SlackService slackService;
 
-    @RequestMapping(value = "/url_verification", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
-    public @ResponseBody String urlVerification(@RequestBody UrlVerificationEvent event) {
+    @RequestMapping(value = "/events", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
+    public @ResponseBody String events(@RequestBody UrlVerificationEvent event) {
         return event.getChallenge();
+    }
+
+    @RequestMapping(value = "/messages", method = RequestMethod.POST)
+    public void events(@RequestBody String message) {
+        slackService.sendMessage(message);
     }
 }

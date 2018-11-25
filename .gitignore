@@ -6,4 +6,5 @@
 yahoo-fantasy-bot.iml
 src/main/resources/yahoo.properties
 src/main/resources/jwt.properties
+src/main/resources/slack.properties
 .DS_STORE
