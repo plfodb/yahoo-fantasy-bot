@@ -6,7 +6,17 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlEnum
 public enum TransactionSourceType {
-    @XmlEnumValue("team") TEAM,
-    @XmlEnumValue("waivers") WAIVERS,
-    @XmlEnumValue("freeagents") FREE_AGENTS
+    @XmlEnumValue("team") TEAM("T"),
+    @XmlEnumValue("waivers") WAIVERS("W"),
+    @XmlEnumValue("freeagents") FREE_AGENTS("FA");
+
+    private String displayText;
+
+    private TransactionSourceType(String displayText) {
+        this.displayText = displayText;
+    }
+
+    public String toString() {
+        return displayText;
+    }
 }

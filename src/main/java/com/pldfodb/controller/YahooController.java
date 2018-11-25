@@ -37,13 +37,6 @@ public class YahooController {
         return "yahoo-logged-in ";
     }
 
-    @RequestMapping(value = "/message", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody LeagueResource sendMessage() {
-
-        slackService.sendMessage("hahahaha");
-        return null;
-    }
-
     @RequestMapping(value = "/league", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody LeagueResource getLeague() {
 

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
@@ -50,7 +52,9 @@ public class YahooOpenIdConfig {
 
     @Bean
     public OAuth2RestTemplate yahooOpenIdTemplate(OAuth2ClientContext clientContext) {
+
         OAuth2RestTemplate template = new OAuth2RestTemplate(yahooOpenId(), clientContext);
+        template.setRequestFactory(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
         template.getInterceptors().add(new LoggingRequestInterceptor());
         return template;
     }

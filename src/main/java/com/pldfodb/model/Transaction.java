@@ -1,50 +1,58 @@
 package com.pldfodb.model;
 
-import com.pldfodb.controller.model.yahoo.TransactionSourceType;
 import com.pldfodb.controller.model.yahoo.TransactionType;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
+@Accessors(chain = true)
 public class Transaction {
 
     @NonNull protected Long id;
     @NonNull protected TransactionType type;
     @NonNull protected Instant timestamp;
-    @NonNull protected TransactionSourceType sourceType;
-    @NonNull protected TransactionSourceType destinationType;
-    @NonNull protected String sourceTeam;
-    @Setter protected String destinationTeam;
-    protected Collection<Player> sourcePlayers = new ArrayList<>();
-    protected Collection<Player> destinationPlayers = new ArrayList<>();
+    protected String sourceTeam;
+    protected String destinationTeam;
+    @Setter protected Map<Player, PlayerTransaction> sourcePlayers = new HashMap<>();
+    @Setter protected Map<Player, PlayerTransaction> destinationPlayers = new HashMap<>();
 
     public Transaction(@NonNull Long id,
                        @NonNull TransactionType type,
                        @NonNull Instant timestamp,
-                       @NonNull TransactionSourceType sourceType,
-                       @NonNull TransactionSourceType destinationType,
-                       @NonNull String sourceTeam) {
+                       String sourceTeam,
+                       String destinationTeam) {
 
         this.id = id;
         this.type = type;
         this.timestamp = timestamp;
-        this.sourceType = sourceType;
-        this.destinationType = destinationType;
         this.sourceTeam = sourceTeam;
+        this.destinationTeam = destinationTeam;
+    }
+
+    public String getTeam() {
+        if (sourceTeam != null && destinationTeam != null)
+            throw new UnsupportedOperationException("Trades are not supported");
+
+        if (sourceTeam != null)
+            return sourceTeam;
+
+        return destinationTeam;
     }
 
     public Transaction addAllSourcePlayers(Collection<Player> players) {
-        this.sourcePlayers.addAll(players);
+        players.forEach(p -> this.sourcePlayers.put(p, null));
         return this;
     }
 
     public Transaction addAllDestinationPlayers(Collection<Player> players) {
-        this.destinationPlayers.addAll(players);
+        players.forEach(p -> this.destinationPlayers.put(p, null));
         return this;
     }
 

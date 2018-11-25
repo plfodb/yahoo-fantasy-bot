@@ -1,15 +1,13 @@
 package com.pldfodb.controller.model.yahoo;
 
 import com.pldfodb.model.Player;
+import com.pldfodb.model.PlayerTransaction;
 import com.pldfodb.model.Transaction;
 import lombok.*;
 
 import javax.xml.bind.annotation.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,43 +32,42 @@ public class TransactionResource {
     private List<PlayerResource> players;
 
     public Transaction getTransaction() {
-        Transaction transaction;
-        Collection<Player> sourcePlayers = new ArrayList<>();
-        Collection<Player> destinationPlayers = new ArrayList<>();
+
+        Map<Player, PlayerTransaction> sourcePlayers = new HashMap<>();
+        Map<Player, PlayerTransaction> destinationPlayers = new HashMap<>();
         PlayerResource player;
-        TransactionSourceType sourceType = null;
-        TransactionSourceType destinationType = null;
+        TransactionDataResource transactionData;
         String sourceTeam = null;
+        String destinationTeam = null;
         switch (type) {
             case ADD:
                 player = players.iterator().next();
-                sourcePlayers.add(new Player(player.getName().getFullName(), player.getPosition()));
-                sourceType = player.getTransactionData().getSourceType();
-                destinationType = TransactionSourceType.TEAM;
-                sourceTeam = player.getTransactionData().getDestinationTeam();
+                transactionData = player.getTransactionData();
+                sourcePlayers.put(new Player(player.getName().getFullName(), player.getPosition()),
+                        new PlayerTransaction(transactionData.getSourceType(),transactionData.getDestinationType()));
+                destinationTeam = transactionData.getDestinationTeam();
                 break;
             case DROP:
                 player = players.iterator().next();
-                destinationPlayers.add(new Player(player.getName().getFullName(), player.getPosition()));
-                sourceType = TransactionSourceType.TEAM;
-                destinationType = player.getTransactionData().getDestinationType();
-                sourceTeam = player.getTransactionData().getSourceTeam();
+                transactionData = player.getTransactionData();
+                destinationPlayers.put(new Player(player.getName().getFullName(), player.getPosition()),
+                        new PlayerTransaction(transactionData.getSourceType(), transactionData.getDestinationType()));
+                sourceTeam = transactionData.getSourceTeam();
                 break;
             case ADD_DROP:
                 Iterator<PlayerResource> it = players.iterator();
                 while (it.hasNext()) {
                     player = it.next();
-                    if (player.getTransactionData().getDestinationType() == TransactionSourceType.TEAM) {
-                        sourcePlayers.add(new Player(player.getName().getFullName(), player.getPosition()));
-                        sourceType = player.getTransactionData().getSourceType();
-                        destinationType = TransactionSourceType.TEAM;
-                        sourceTeam = player.getTransactionData().getDestinationTeam();
+                    transactionData = player.getTransactionData();
+                    if (transactionData.getDestinationType() == TransactionSourceType.TEAM) {
+                        sourcePlayers.put(new Player(player.getName().getFullName(), player.getPosition()),
+                                new PlayerTransaction(transactionData.getSourceType(), transactionData.getDestinationType()));
+                        destinationTeam = transactionData.getDestinationTeam();
                     }
                     else {
-                        destinationPlayers.add(new Player(player.getName().getFullName(), player.getPosition()));
-                        sourceType = TransactionSourceType.TEAM;
-                        destinationType = player.getTransactionData().getDestinationType();
-                        sourceTeam = player.getTransactionData().getSourceTeam();
+                        destinationPlayers.put(new Player(player.getName().getFullName(), player.getPosition()),
+                                new PlayerTransaction(transactionData.getSourceType(), transactionData.getDestinationType()));
+                        sourceTeam = transactionData.getSourceTeam();
                     }
                 }
                 break;
@@ -79,8 +76,8 @@ public class TransactionResource {
                 throw new UnsupportedOperationException("Trades are not supported");
         }
 
-        return new Transaction(id, type, Instant.ofEpochMilli(timestamp), sourceType, destinationType, sourceTeam)
-                .addAllSourcePlayers(sourcePlayers)
-                .addAllDestinationPlayers(destinationPlayers);
+        return new Transaction(id, type, Instant.ofEpochMilli(timestamp), sourceTeam, destinationTeam)
+                .setSourcePlayers(sourcePlayers)
+                .setDestinationPlayers(destinationPlayers);
     }
 }
