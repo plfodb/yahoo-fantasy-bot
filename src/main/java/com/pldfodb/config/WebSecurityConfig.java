@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
             .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
-                .antMatchers("/actuator/health", "/favicon.ico").permitAll()
+                .antMatchers("/actuator/health", "/favicon.ico", "/slack/events").permitAll()
                 .anyRequest().authenticated();
 
     }
