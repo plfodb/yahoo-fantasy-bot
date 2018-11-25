@@ -1,5 +1,6 @@
 package com.pldfodb.config;
 
+import com.pldfodb.jwt.JwtTokenAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,23 +10,22 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired private JwtConfig jwtConfig;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-//        http.authorizeRequests()
-//            .antMatchers("/actuator/health", "/favicon.ico").permitAll()
-//            .anyRequest().authenticated()
-//            .and()
-//            .formLogin();
+        http.csrf().disable()
+            .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
+            .authorizeRequests()
+                .antMatchers("/actuator/health", "/favicon.ico").permitAll()
+                .anyRequest().authenticated();
 
-        // TODO enable JWT or OAuth login
-        http.authorizeRequests().antMatchers("/").permitAll();
-
-        http.csrf().disable();
     }
 }
