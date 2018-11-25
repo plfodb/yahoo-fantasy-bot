@@ -1,11 +1,12 @@
 package com.pldfodb.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.pldfodb.controller.model.FantasyContentResource;
-import com.pldfodb.controller.model.LeagueResource;
-import com.pldfodb.controller.model.TransactionResource;
-import com.pldfodb.client.YahooClient;
+import com.pldfodb.client.YahooOAuthClient;
+import com.pldfodb.controller.model.yahoo.FantasyContentResource;
+import com.pldfodb.controller.model.yahoo.LeagueResource;
+import com.pldfodb.controller.model.yahoo.TransactionResource;
 import com.pldfodb.repo.AuthenticationRepository;
+import com.pldfodb.service.SlackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -20,8 +21,9 @@ import java.util.List;
 @RequestMapping("/yahoo")
 public class YahooController {
 
-    @Autowired private YahooClient client;
+    @Autowired private YahooOAuthClient client;
     @Autowired private AuthenticationRepository authRepo;
+    @Autowired private SlackService slackService;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String redirect(Model model) {
@@ -33,6 +35,13 @@ public class YahooController {
         OAuth2AccessToken token = client.login();
         authRepo.updateToken(token);
         return "yahoo-logged-in ";
+    }
+
+    @RequestMapping(value = "/message", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody LeagueResource sendMessage() {
+
+        slackService.sendMessage("hahahaha");
+        return null;
     }
 
     @RequestMapping(value = "/league", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,8 +57,8 @@ public class YahooController {
     }
 
     @RequestMapping(value = "/transactions", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody List<TransactionResource> getTransactions() {
+    public @ResponseBody List<TransactionResource> getTransactions(@RequestParam(value = "count", defaultValue = "20") Integer count) {
 
-        return client.getTransactions();
+        return client.getTransactions(count);
     }
 }

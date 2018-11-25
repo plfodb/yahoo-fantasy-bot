@@ -2,10 +2,15 @@ package com.pldfodb.service;
 
 import com.google.common.collect.ImmutableSet;
 import com.pldfodb.client.YahooClient;
-import com.pldfodb.controller.model.TransactionResource;
+import com.pldfodb.controller.model.yahoo.TransactionResource;
 import com.pldfodb.model.Transaction;
+import com.pldfodb.repo.AuthenticationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -16,19 +21,32 @@ import java.util.stream.Collectors;
 @Service
 public class TransactionStateService {
 
-    @Autowired private YahooClient yahooClient;
-
+    @Autowired private AuthenticationRepository authRepo;
+    @Autowired private OAuth2ProtectedResourceDetails authDetails;
+    private YahooClient yahooClient;
     private Set<Transaction> transactions = new HashSet<>();
     private Set<Transaction> transactionsToNotify = new HashSet<>();
 
-//    @Scheduled(fixedRate = 5000)
+    private static final int TRANSACTIONS_TO_FETCH = 20;
+
+    public void setup() {
+        OAuth2AccessToken token = authRepo.getToken();
+        if (token != null)
+            yahooClient = new YahooClient(new OAuth2RestTemplate(authDetails, new DefaultOAuth2ClientContext(token)));
+    }
+
+    @Scheduled(fixedRate = 5000)
     private void updateTransactions() {
 
-        List<TransactionResource> updatedTransactionResources = yahooClient.getTransactions();
+        if (yahooClient == null)
+            return;
+
+        List<TransactionResource> updatedTransactionResources = yahooClient.getTransactions(TRANSACTIONS_TO_FETCH);
         Set<Transaction> updatedTransactions = updatedTransactionResources.stream().map(TransactionResource::getTransaction).collect(Collectors.toSet());
 
         if (!transactions.equals(updatedTransactions)) {
 
+            System.out.println("Got new transactions");
             transactionsToNotify.addAll(updatedTransactions);
             transactionsToNotify.removeAll(transactions);
         }

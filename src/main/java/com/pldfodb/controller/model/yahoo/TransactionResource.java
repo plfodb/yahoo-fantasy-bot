@@ -1,4 +1,4 @@
-package com.pldfodb.controller.model;
+package com.pldfodb.controller.model.yahoo;
 
 import com.pldfodb.model.Player;
 import com.pldfodb.model.Transaction;

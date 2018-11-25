@@ -1,7 +1,7 @@
 package com.pldfodb.model;
 
-import com.pldfodb.controller.model.TransactionSourceType;
-import com.pldfodb.controller.model.TransactionType;
+import com.pldfodb.controller.model.yahoo.TransactionSourceType;
+import com.pldfodb.controller.model.yahoo.TransactionType;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

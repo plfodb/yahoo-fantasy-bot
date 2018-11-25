@@ -26,10 +26,15 @@ public class AuthenticationRepository {
         jdbcTemplate.update("INSERT INTO tokens VALUES (:token)", namedParameters);
     }
 
-    public OAuth2AccessToken getToken() throws IOException {
+    public OAuth2AccessToken getToken() {
 
         String tokenJson = jdbcTemplate.queryForObject("SELECT * FROM tokens LIMIT 1", new MapSqlParameterSource(), String.class);
-        return mapper.readValue(tokenJson, OAuth2AccessToken.class);
+        try {
+            return mapper.readValue(tokenJson, OAuth2AccessToken.class);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     private String fileListQuery = "SELECT * FROM files ORDER BY upload_time DESC LIMIT :limit OFFSET :offset";
