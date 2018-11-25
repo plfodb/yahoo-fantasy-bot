@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,10 +30,16 @@ public class TransactionStateService {
 
     private static final int TRANSACTIONS_TO_FETCH = 20;
 
+    @PostConstruct
     public void setup() {
+        System.out.println("initializing oauth client from db");
         OAuth2AccessToken token = authRepo.getToken();
-        if (token != null)
+        if (token != null) {
             yahooClient = new YahooClient(new OAuth2RestTemplate(authDetails, new DefaultOAuth2ClientContext(token)));
+            System.out.println("Initialized yahoo client with stored OAuth credentials");
+        }
+        else
+            System.out.println("No stored OAuth credentials found. User login required");
     }
 
     @Scheduled(fixedRate = 5000)

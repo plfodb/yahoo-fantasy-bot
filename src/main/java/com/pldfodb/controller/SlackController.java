@@ -22,7 +22,7 @@ public class SlackController {
     }
 
     @RequestMapping(value = "/messages", method = RequestMethod.POST)
-    public void events(@RequestBody String message) {
+    public @ResponseBody void sendMessage(@RequestBody String message) {
         slackService.sendMessage(message);
     }
 }

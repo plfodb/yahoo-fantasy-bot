@@ -3,6 +3,7 @@ package com.pldfodb.repo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 @Repository
 public class AuthenticationRepository {
@@ -28,7 +31,12 @@ public class AuthenticationRepository {
 
     public OAuth2AccessToken getToken() {
 
-        String tokenJson = jdbcTemplate.queryForObject("SELECT * FROM tokens LIMIT 1", new MapSqlParameterSource(), String.class);
+        List<String> results = jdbcTemplate.query("SELECT * FROM tokens LIMIT 1", new MapSqlParameterSource(), SingleColumnRowMapper.newInstance(String.class));
+        Iterator<String> it = results.iterator();
+        if (!it.hasNext())
+            return null;
+
+        String tokenJson = results.iterator().next();
         try {
             return mapper.readValue(tokenJson, OAuth2AccessToken.class);
         } catch (IOException e) {
