@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,11 @@ public class YahooController {
 
     @Autowired private YahooClient client;
     @Autowired private AuthenticationRepository authRepo;
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String redirect(Model model) {
+        return "yahoo-logged-in";
+    }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(ModelMap map) throws JsonProcessingException {
