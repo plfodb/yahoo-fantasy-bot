@@ -72,9 +72,7 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
             LOGGER.debug("Response time: {}", elapsedTime(startTime.toEpochMilli(), System.currentTimeMillis()));
             LOGGER.debug("================================================================================");
         } else {
-            try (Mdc processTimeMdc = Mdc.set("payload_process_time_ms", Duration.between(startTime, Instant.now()))) {
                 LOGGER.info("Recieved {} response from {} {}.", response.getStatusCode(), request.getMethod(), request.getURI());
-            }
         }
     }
 
