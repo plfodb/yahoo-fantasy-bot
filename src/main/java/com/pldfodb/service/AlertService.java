@@ -28,7 +28,6 @@ public class AlertService {
         newTransactions.forEach(t -> {
 
             SlackAttachment transactionAttachment = new SlackAttachment();
-            transactionAttachment.setPretext("Transaction Alert");
             transactionAttachment.setAuthorName(t.getTeam());
             transactionAttachment.addField("Add", format(t.getSourcePlayers(), true), true);
             transactionAttachment.addField("Drop", format(t.getDestinationPlayers(), false), true);
@@ -36,6 +35,7 @@ public class AlertService {
             transactionAttachment.setColor("#39138C");
 
             SlackPreparedMessage preparedMessage = new SlackPreparedMessage.Builder()
+                    .withMessage("Transaction Alert")
                     .withUnfurl(false)
                     .addAttachment(transactionAttachment)
                     .build();
