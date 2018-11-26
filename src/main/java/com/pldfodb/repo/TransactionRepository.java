@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Map.Entry;
 
@@ -31,12 +32,14 @@ public class TransactionRepository {
     @Autowired private ObjectMapper mapper;
 
     @Transactional
-    public void addTransactions(Set<Transaction> transactions) throws JsonProcessingException {
+    public void addTransactions(Set<Transaction> transactions) {
 
         if (transactions.isEmpty())
             return;
 
         List<SqlParameterSource> transactionParams = new ArrayList<>(transactions.size());
+        List<SqlParameterSource> playerParams = new ArrayList<>(transactions.size() * 2);
+        List<SqlParameterSource> playerTransactionParams = new ArrayList<>(transactions.size() * 2);
         for (Transaction t : transactions) {
             transactionParams.add(new MapSqlParameterSource()
                     .addValue("transactionId", t.getId())
@@ -44,12 +47,9 @@ public class TransactionRepository {
                     .addValue("dateExecuted", new java.sql.Date(t.getDateExecuted().toEpochMilli()))
                     .addValue("sourceTeam", t.getSourceTeam())
                     .addValue("destinationTeam", t.getDestinationTeam()));
-        }
-        List<SqlParameterSource> playerParams = new ArrayList<>(transactions.size() * 2);
-        List<SqlParameterSource> playerTransactionParams = new ArrayList<>(transactions.size() * 2);
-        for (Transaction t : transactions) {
+
             Integer transactionId = t.getId();
-            for (Map.Entry<Player, PlayerTransaction> entry : t.getSourcePlayers().entrySet()) {
+            Stream.concat(t.getSourcePlayers().entrySet().stream(), t.getDestinationPlayers().entrySet().stream()).forEach(entry -> {
 
                 Player player = entry.getKey();
                 PlayerTransaction playerTransaction = entry.getValue();
@@ -63,7 +63,7 @@ public class TransactionRepository {
                         .addValue("playerId", player.getId())
                         .addValue("source", playerTransaction.getSource().name())
                         .addValue("destination", playerTransaction.getDestination().name()));
-            }
+            });
         }
         jdbcTemplate.batchUpdate("INSERT INTO transactions VALUES (:transactionId, :type, :dateExecuted, :sourceTeam, :destinationTeam)", transactionParams.toArray(new SqlParameterSource[transactionParams.size()]));
         jdbcTemplate.batchUpdate(batchPlayerUpdateQuery, playerParams.toArray(new SqlParameterSource[playerParams.size()]));
