@@ -7,33 +7,41 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.time.Instant;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-@Accessors(chain = true)
-public class Transaction {
+public class Transaction implements Comparable<Transaction> {
 
-    @NonNull protected Long id;
+    @NonNull protected Integer id;
     @NonNull protected TransactionType type;
-    @NonNull protected Instant timestamp;
+    @NonNull protected Instant dateExecuted;
     protected String sourceTeam;
     protected String destinationTeam;
-    @Setter protected Map<Player, PlayerTransaction> sourcePlayers = new HashMap<>();
-    @Setter protected Map<Player, PlayerTransaction> destinationPlayers = new HashMap<>();
+    protected Map<Player, PlayerTransaction> sourcePlayers = new HashMap<>();
+    protected Map<Player, PlayerTransaction> destinationPlayers = new HashMap<>();
 
-    public Transaction(@NonNull Long id,
+    public Transaction(@NonNull Integer id,
                        @NonNull TransactionType type,
-                       @NonNull Instant timestamp,
+                       @NonNull Instant dateExecuted,
                        String sourceTeam,
                        String destinationTeam) {
 
         this.id = id;
         this.type = type;
-        this.timestamp = timestamp;
+        this.dateExecuted = dateExecuted;
         this.sourceTeam = sourceTeam;
         this.destinationTeam = destinationTeam;
+    }
+
+    public Transaction setSourcePlayers(Map<Player, PlayerTransaction> sourcePlayers) {
+        this.sourcePlayers.putAll(sourcePlayers);
+        return this;
+    }
+
+    public Transaction setDestinationPlayers(Map<Player, PlayerTransaction> destinationPlayers) {
+        this.destinationPlayers.putAll(destinationPlayers);
+        return this;
     }
 
     public String getTeam() {
@@ -44,16 +52,6 @@ public class Transaction {
             return sourceTeam;
 
         return destinationTeam;
-    }
-
-    public Transaction addAllSourcePlayers(Collection<Player> players) {
-        players.forEach(p -> this.sourcePlayers.put(p, null));
-        return this;
-    }
-
-    public Transaction addAllDestinationPlayers(Collection<Player> players) {
-        players.forEach(p -> this.destinationPlayers.put(p, null));
-        return this;
     }
 
     @Override
@@ -67,5 +65,10 @@ public class Transaction {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    @Override
+    public int compareTo(Transaction o) {
+        return this.id.compareTo(o.id);
     }
 }

@@ -1,5 +1,6 @@
 package com.pldfodb.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pldfodb.controller.model.yahoo.TransactionSourceType;
 import com.pldfodb.model.Player;
 import com.pldfodb.model.PlayerTransaction;
@@ -21,7 +22,7 @@ public class AlertService {
     @Autowired private SlackService slackService;
 
     @Scheduled(fixedRate = 5000)
-    public void transactionAlerts() {
+    public void transactionAlerts() throws JsonProcessingException {
 
         Set<Transaction> newTransactions = transactionStateService.consumeNewTransactions();
         newTransactions.forEach(t -> {
@@ -31,9 +32,8 @@ public class AlertService {
             transactionAttachment.setAuthorName(t.getTeam());
             transactionAttachment.addField("Add", format(t.getSourcePlayers(), true), true);
             transactionAttachment.addField("Drop", format(t.getDestinationPlayers(), false), true);
-            transactionAttachment.setFooter("<!date^" + t.getTimestamp().getEpochSecond() + "^{date} {time_secs}|Who knows when>");
+            transactionAttachment.setFooter("<!date^" + t.getDateExecuted().getEpochSecond() + "^{date} {time_secs}|Who knows when>");
             transactionAttachment.setColor("#39138C");
-            transactionAttachment.setText("Hey Hey Hey");
 
             SlackPreparedMessage preparedMessage = new SlackPreparedMessage.Builder()
                     .withUnfurl(false)

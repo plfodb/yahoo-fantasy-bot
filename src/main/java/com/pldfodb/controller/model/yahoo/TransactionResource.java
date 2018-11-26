@@ -19,7 +19,7 @@ import java.util.*;
 public class TransactionResource {
 
     @XmlElement(name = "transaction_id")
-    private Long id;
+    private Integer id;
 
     @XmlElement(name = "type")
     private TransactionType type;
@@ -43,15 +43,13 @@ public class TransactionResource {
             case ADD:
                 player = players.iterator().next();
                 transactionData = player.getTransactionData();
-                sourcePlayers.put(new Player(player.getName().getFullName(), player.getPosition()),
-                        new PlayerTransaction(transactionData.getSourceType(),transactionData.getDestinationType()));
+                sourcePlayers.put(player.getPlayer(), player.getTransaction());
                 destinationTeam = transactionData.getDestinationTeam();
                 break;
             case DROP:
                 player = players.iterator().next();
                 transactionData = player.getTransactionData();
-                destinationPlayers.put(new Player(player.getName().getFullName(), player.getPosition()),
-                        new PlayerTransaction(transactionData.getSourceType(), transactionData.getDestinationType()));
+                destinationPlayers.put(player.getPlayer(), player.getTransaction());
                 sourceTeam = transactionData.getSourceTeam();
                 break;
             case ADD_DROP:
@@ -60,13 +58,11 @@ public class TransactionResource {
                     player = it.next();
                     transactionData = player.getTransactionData();
                     if (transactionData.getDestinationType() == TransactionSourceType.TEAM) {
-                        sourcePlayers.put(new Player(player.getName().getFullName(), player.getPosition()),
-                                new PlayerTransaction(transactionData.getSourceType(), transactionData.getDestinationType()));
-                        destinationTeam = transactionData.getDestinationTeam();
+                        sourcePlayers.put(player.getPlayer(), player.getTransaction());
+                        sourceTeam = transactionData.getDestinationTeam();
                     }
                     else {
-                        destinationPlayers.put(new Player(player.getName().getFullName(), player.getPosition()),
-                                new PlayerTransaction(transactionData.getSourceType(), transactionData.getDestinationType()));
+                        destinationPlayers.put(player.getPlayer(), player.getTransaction());
                         sourceTeam = transactionData.getSourceTeam();
                     }
                 }
@@ -76,7 +72,7 @@ public class TransactionResource {
                 throw new UnsupportedOperationException("Trades are not supported");
         }
 
-        return new Transaction(id, type, Instant.ofEpochMilli(timestamp), sourceTeam, destinationTeam)
+        return new Transaction(id, type, Instant.ofEpochSecond(timestamp), sourceTeam, destinationTeam)
                 .setSourcePlayers(sourcePlayers)
                 .setDestinationPlayers(destinationPlayers);
     }

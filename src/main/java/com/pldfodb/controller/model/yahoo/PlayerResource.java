@@ -1,5 +1,7 @@
 package com.pldfodb.controller.model.yahoo;
 
+import com.pldfodb.model.Player;
+import com.pldfodb.model.PlayerTransaction;
 import lombok.*;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -16,6 +18,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PlayerResource {
 
+    @XmlElement(name = "player_id")
+    private Long id;
+
     @XmlElement(name = "name")
     private PlayerNameResource name;
 
@@ -24,4 +29,12 @@ public class PlayerResource {
 
     @XmlElement(name = "transaction_data")
     private TransactionDataResource transactionData;
+
+    public Player getPlayer() {
+        return new Player(id, name.getFullName(), position);
+    }
+
+    public PlayerTransaction getTransaction() {
+        return new PlayerTransaction(transactionData.getSourceType(), transactionData.getDestinationType());
+    }
 }

@@ -8,6 +8,7 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class Player {
 
+    @NonNull private Long id;
     @NonNull private String name;
     @NonNull private String position;
 }

@@ -8,5 +8,5 @@ public enum TransactionType {
     @XmlEnumValue("add") ADD,
     @XmlEnumValue("drop") DROP,
     @XmlEnumValue("add/drop") ADD_DROP,
-    @XmlEnumValue("trade") TRADE
+    @XmlEnumValue("trade") TRADE;
 }

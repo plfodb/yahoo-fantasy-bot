@@ -20,7 +20,7 @@ public class DatabaseConfig {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
 //        dataSource.setJdbcUrl("jdbc:postgresql://postgres:5432/yahoo-fantasy-bot");
-        dataSource.setJdbcUrl("jdbc:postgresql://localhost:32769/postgres");
+        dataSource.setJdbcUrl("jdbc:postgresql://localhost:32773/postgres");
         dataSource.setUsername("postgres");
         dataSource.setPassword("postgres");
         return dataSource;
