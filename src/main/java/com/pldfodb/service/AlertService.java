@@ -1,6 +1,5 @@
 package com.pldfodb.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.pldfodb.controller.model.yahoo.TransactionSourceType;
 import com.pldfodb.model.Player;
 import com.pldfodb.model.PlayerTransaction;

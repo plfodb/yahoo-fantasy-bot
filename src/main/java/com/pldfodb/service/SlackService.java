@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class SlackService {
 
     @Autowired SlackSession session;
-    private static final String CHANNEL = "yahoo-bot-testing";
+    private static final String CHANNEL = "general";
 
     public void sendMessage(String message) {
 
