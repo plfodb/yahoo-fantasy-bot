@@ -33,6 +33,9 @@ public class TransactionRepository {
     @Transactional
     public void addTransactions(Set<Transaction> transactions) throws JsonProcessingException {
 
+        if (transactions.isEmpty())
+            return;
+
         List<SqlParameterSource> transactionParams = new ArrayList<>(transactions.size());
         for (Transaction t : transactions) {
             transactionParams.add(new MapSqlParameterSource()

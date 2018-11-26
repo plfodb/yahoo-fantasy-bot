@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Controller
 @RequestMapping("/slack")
 public class SlackController {
@@ -27,7 +29,7 @@ public class SlackController {
     }
 
     @PostMapping("/alerts/transactions")
-    public @ResponseBody void sendTransactionAlerts() throws JsonProcessingException {
+    public @ResponseBody void sendTransactionAlerts() throws IOException {
 
         alertService.transactionAlerts();
     }

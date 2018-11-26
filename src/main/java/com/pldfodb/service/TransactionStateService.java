@@ -1,6 +1,5 @@
 package com.pldfodb.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.ImmutableSet;
 import com.pldfodb.controller.model.yahoo.TransactionResource;
 import com.pldfodb.model.Transaction;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -21,21 +19,25 @@ public class TransactionStateService extends YahooOAuthService {
 
     @Autowired private TransactionRepository transactionRepo;
 
-    private Set<Transaction> transactions = new TreeSet<>();
+    private Set<Transaction> transactions;
     private Set<Transaction> transactionsToNotify = new TreeSet<>();
 
     private static final int TRANSACTIONS_TO_FETCH = 20;
 
-    @PostConstruct
     private void initialize() throws IOException {
-        transactions.addAll(transactionRepo.getLatestTransactions(TRANSACTIONS_TO_FETCH));
+        if (transactions == null) {
+            transactions = new TreeSet<>();
+            transactions.addAll(transactionRepo.getLatestTransactions(TRANSACTIONS_TO_FETCH));
+        }
     }
 
     @Scheduled(fixedRate = 5000)
-    public void updateTransactions() {
+    public void updateTransactions() throws IOException {
 
         if (yahooClient == null)
             return;
+
+        initialize();
 
         List<TransactionResource> updatedTransactionResources = yahooClient.getTransactions(TRANSACTIONS_TO_FETCH);
         Set<Transaction> updatedTransactions = updatedTransactionResources.stream().map(TransactionResource::getTransaction).collect(Collectors.toCollection(TreeSet::new));
@@ -48,7 +50,7 @@ public class TransactionStateService extends YahooOAuthService {
         }
     }
 
-    public Set<Transaction> consumeNewTransactions() throws JsonProcessingException {
+    public Set<Transaction> consumeNewTransactions() throws IOException {
 
 //        Map<Player, PlayerTransaction> sourcePlayers = new HashMap<>();
 //        Map<Player, PlayerTransaction> destinationPlayers = new HashMap<>();

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
+
 @Controller
 @RequestMapping("/transactions")
 public class TransactionController {
@@ -15,7 +17,7 @@ public class TransactionController {
     @Autowired private TransactionStateService transactionStateService;
 
     @PostMapping("/")
-    public @ResponseBody void updateTransactions() {
+    public @ResponseBody void updateTransactions() throws IOException {
         transactionStateService.updateTransactions();
     }
 }

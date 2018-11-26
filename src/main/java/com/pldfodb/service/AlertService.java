@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class AlertService {
     @Autowired private SlackService slackService;
 
     @Scheduled(fixedRate = 5000)
-    public void transactionAlerts() throws JsonProcessingException {
+    public void transactionAlerts() throws IOException {
 
         Set<Transaction> newTransactions = transactionStateService.consumeNewTransactions();
         newTransactions.forEach(t -> {
