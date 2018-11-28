@@ -1,25 +1,24 @@
 package com.pldfodb.config;
 
-import com.pldfodb.client.LoggingRequestInterceptor;
-import com.pldfodb.oauth.ClientOnlyAuthorizationCodeDetails;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.client.BufferingClientHttpRequestFactory;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
+import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 
 @Configuration
-@EnableOAuth2Client
 @PropertySource("classpath:yahoo.properties")
-public class YahooOpenIdConfig {
+public class YahooOAuthConfig {
+
+    @Autowired
+    public DataSource dataSource;
 
     @Value("${client-id}")
     private String clientId;
@@ -38,7 +37,7 @@ public class YahooOpenIdConfig {
 
     @Bean
     public OAuth2ProtectedResourceDetails yahooOpenId() {
-        AuthorizationCodeResourceDetails details = new ClientOnlyAuthorizationCodeDetails();
+        AuthorizationCodeResourceDetails details = new AuthorizationCodeResourceDetails();
         details.setClientId(clientId);
         details.setClientSecret(clientSecret);
         details.setAccessTokenUri(tokenUri);
@@ -50,12 +49,15 @@ public class YahooOpenIdConfig {
         return details;
     }
 
-    @Bean
-    public OAuth2RestTemplate yahooOpenIdTemplate(OAuth2ClientContext clientContext) {
+//    @Bean
+//    public ClientTokenServices clientTokenServices() {
+//        return new JdbcClientTokenServices(dataSource);
+//    }
 
-        OAuth2RestTemplate template = new OAuth2RestTemplate(yahooOpenId(), clientContext);
-        template.setRequestFactory(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
-        template.getInterceptors().add(new LoggingRequestInterceptor());
+    @Bean
+    public OAuth2RestTemplate yahooOpenIdTemplate() {
+
+        OAuth2RestTemplate template = new OAuth2RestTemplate(yahooOpenId(), new DefaultOAuth2ClientContext());
         return template;
     }
 }

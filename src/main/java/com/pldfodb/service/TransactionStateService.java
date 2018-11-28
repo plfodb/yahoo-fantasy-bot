@@ -31,7 +31,7 @@ public class TransactionStateService extends YahooOAuthService {
         }
     }
 
-    @Scheduled(fixedRate = 5000)
+//    @Scheduled(fixedRate = 5000)
     public void updateTransactions() throws IOException {
 
         if (yahooClient == null)

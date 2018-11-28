@@ -2,11 +2,13 @@ package com.pldfodb.repo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pldfodb.oauth.StaticExpirationOAuth2AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +26,7 @@ public class AuthenticationRepository {
     @Transactional
     public void updateToken(OAuth2AccessToken token) throws JsonProcessingException {
 
-        SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("token", mapper.writeValueAsString(token));
+        SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("token", mapper.writeValueAsString(new StaticExpirationOAuth2AccessToken(token)));
         jdbcTemplate.update("TRUNCATE tokens", new MapSqlParameterSource());
         jdbcTemplate.update("INSERT INTO tokens VALUES (:token)", namedParameters);
     }
@@ -38,7 +40,7 @@ public class AuthenticationRepository {
 
         String tokenJson = results.iterator().next();
         try {
-            return mapper.readValue(tokenJson, OAuth2AccessToken.class);
+            return new DefaultOAuth2AccessToken(mapper.readValue(tokenJson, OAuth2AccessToken.class));
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return null;

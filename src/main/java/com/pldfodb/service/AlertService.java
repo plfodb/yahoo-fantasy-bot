@@ -21,7 +21,7 @@ public class AlertService {
     @Autowired private TransactionStateService transactionStateService;
     @Autowired private SlackService slackService;
 
-    @Scheduled(fixedRate = 5000)
+//    @Scheduled(fixedRate = 5000)
     public void transactionAlerts() throws IOException {
 
         Set<Transaction> newTransactions = transactionStateService.consumeNewTransactions();
