@@ -25,10 +25,10 @@ public class YahooController {
     @Autowired private AuthenticationRepository authRepo;
     @Autowired private SlackService slackService;
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public String redirect(Model model) {
-        return "yahoo-logged-in";
-    }
+//    @RequestMapping(value = "/test", method = RequestMethod.GET)
+//    public String redirect(Model model) {
+//        return "yahoo-logged-in";
+//    }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(ModelMap map) throws JsonProcessingException {

@@ -21,10 +21,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+        // TODO figure out authentication for POST /slack/events
+
         http.csrf().disable()
             .addFilterAfter(new JwtTokenAuthenticationFilter(jwtConfig), UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
-                .antMatchers("/actuator/health", "/favicon.ico", "/slack/events").permitAll()
+                .antMatchers("/actuator/health", "/favicon.ico").permitAll()
                 .anyRequest().authenticated();
 
     }

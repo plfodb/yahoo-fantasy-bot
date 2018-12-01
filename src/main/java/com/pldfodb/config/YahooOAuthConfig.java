@@ -43,8 +43,6 @@ public class YahooOAuthConfig {
         details.setAccessTokenUri(tokenUri);
         details.setUserAuthorizationUri(userAuthorizationUri);
         details.setScope(Arrays.asList("openid"));
-//        details.setPreEstablishedRedirectUri(redirectUri);
-//        details.setUseCurrentUri(false);
         details.setUseCurrentUri(true);
         return details;
     }

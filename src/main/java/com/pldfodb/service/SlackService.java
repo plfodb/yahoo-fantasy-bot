@@ -11,14 +11,10 @@ import org.springframework.stereotype.Service;
 public class SlackService {
 
     @Autowired SlackSession session;
-    private static final String CHANNEL = "general";
+    @Autowired SlackChannel channel;
 
     public void sendMessage(String message) {
 
-        //get a channel
-        SlackChannel channel = session.findChannelByName(CHANNEL);
-
-        //build a message object
         SlackPreparedMessage preparedMessage = new SlackPreparedMessage.Builder()
                 .withMessage(message)
                 .withUnfurl(false)
@@ -31,7 +27,6 @@ public class SlackService {
 
     public void sendMessage(SlackPreparedMessage message) {
 
-        SlackChannel channel = session.findChannelByName(CHANNEL);
         session.sendMessage(channel, message);
     }
 }

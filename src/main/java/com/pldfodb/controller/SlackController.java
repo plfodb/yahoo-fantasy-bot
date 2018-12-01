@@ -20,11 +20,13 @@ public class SlackController {
 
     @RequestMapping(value = "/events", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
     public @ResponseBody String events(@RequestBody UrlVerificationEvent event) {
+
         return event.getChallenge();
     }
 
-    @RequestMapping(value = "/messages", method = RequestMethod.POST)
+    @PostMapping(value = "/messages")
     public @ResponseBody void sendMessage(@RequestBody String message) {
+
         slackService.sendMessage(message);
     }
 

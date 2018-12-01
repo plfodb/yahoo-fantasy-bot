@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 @Service
 public class AlertService {
@@ -21,7 +22,9 @@ public class AlertService {
     @Autowired private TransactionStateService transactionStateService;
     @Autowired private SlackService slackService;
 
-//    @Scheduled(fixedRate = 5000)
+    private static final Logger LOGGER = Logger.getLogger(AlertService.class.getName());
+
+    @Scheduled(fixedRate = 5000)
     public void transactionAlerts() throws IOException {
 
         Set<Transaction> newTransactions = transactionStateService.consumeNewTransactions();
@@ -40,6 +43,7 @@ public class AlertService {
                     .addAttachment(transactionAttachment)
                     .build();
 
+            LOGGER.info("Sending a message to Slack");
             slackService.sendMessage(preparedMessage);
         });
     }

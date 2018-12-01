@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 public abstract class YahooOAuthService {
 
@@ -21,8 +22,26 @@ public abstract class YahooOAuthService {
     @Autowired protected OAuth2ProtectedResourceDetails authDetails;
     protected YahooOAuthClient yahooClient;
 
+    private static final Logger LOGGER = Logger.getLogger(YahooOAuthService.class.getName());
+
     @PostConstruct
     public void setup() {
+        setAuthentication();
+        LOGGER.info("Initializing oauth client from db");
+        OAuth2AccessToken token = authRepo.getToken();
+        if (token != null) {
+            yahooClient = new YahooOAuthClient(new OAuth2RestTemplate(authDetails, new DefaultOAuth2ClientContext(token)));
+            LOGGER.info("Initialized yahoo client with stored OAuth credentials");
+        }
+        else
+            LOGGER.info("No stored OAuth credentials found. User login required");
+    }
+
+    protected void setAuthentication() {
+
+        if (SecurityContextHolder.getContext().getAuthentication() != null)
+            return;
+
         // AccessTokenProviderChain to fix refresh. have to either set authentication or hack the clientOnly flag
         SecurityContextHolder.getContext().setAuthentication(new Authentication() {
             @Override
@@ -60,13 +79,5 @@ public abstract class YahooOAuthService {
                 return null;
             }
         });
-        System.out.println("initializing oauth client from db");
-        OAuth2AccessToken token = authRepo.getToken();
-        if (token != null) {
-            yahooClient = new YahooOAuthClient(new OAuth2RestTemplate(authDetails, new DefaultOAuth2ClientContext(new StaticExpirationOAuth2AccessToken(token))));
-            System.out.println("Initialized yahoo client with stored OAuth credentials");
-        }
-        else
-            System.out.println("No stored OAuth credentials found. User login required");
     }
 }
