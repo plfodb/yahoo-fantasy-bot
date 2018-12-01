@@ -44,7 +44,7 @@ public class AuthenticationRepository {
 
         String tokenJson = results.iterator().next();
         try {
-            return new DefaultOAuth2AccessToken(mapper.readValue(tokenJson, OAuth2AccessToken.class));
+            return new StaticExpirationOAuth2AccessToken(new DefaultOAuth2AccessToken(mapper.readValue(tokenJson, OAuth2AccessToken.class)));
         } catch (IOException e) {
             LOGGER.warning(e.getMessage());
             e.printStackTrace();
