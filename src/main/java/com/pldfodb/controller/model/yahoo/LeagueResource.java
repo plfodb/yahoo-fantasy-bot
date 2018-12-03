@@ -20,4 +20,7 @@ public class LeagueResource {
     @XmlElementWrapper(name = "transactions")
     @XmlElement(name = "transaction")
     private List<TransactionResource> transactions;
+
+    @XmlElement(name = "scoreboard")
+    private ScoreboardResource scoreboard;
 }

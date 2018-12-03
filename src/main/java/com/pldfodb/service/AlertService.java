@@ -1,9 +1,9 @@
 package com.pldfodb.service;
 
 import com.pldfodb.controller.model.yahoo.TransactionSourceType;
-import com.pldfodb.model.Player;
-import com.pldfodb.model.PlayerTransaction;
-import com.pldfodb.model.Transaction;
+import com.pldfodb.model.*;
+import com.pldfodb.model.event.MatchupStateChangeEvent;
+import com.pldfodb.repo.TeamRepository;
 import com.ullink.slack.simpleslackapi.SlackAttachment;
 import com.ullink.slack.simpleslackapi.SlackPreparedMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +11,21 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
 
 @Service
 public class AlertService {
 
     @Autowired private TransactionStateService transactionStateService;
+    @Autowired private MatchupStateService matchupStateService;
     @Autowired private SlackService slackService;
+    @Autowired private TeamRepository teamRepo;
 
     private static final Logger LOGGER = Logger.getLogger(AlertService.class.getName());
 
@@ -48,10 +53,60 @@ public class AlertService {
         });
     }
 
+    @Scheduled(fixedRate = 5000)
+    public void matchupAlerts() throws IOException {
+
+        List<MatchupStateChangeEvent> events = matchupStateService.consumeEvents();
+        events.forEach(event -> {
+
+            Matchup matchup;
+            SlackPreparedMessage preparedMessage;
+            switch (event.getType()) {
+                case WIN_PROJECTION:
+                    matchup = event.getMatchup();
+                    MatchupTeam firstMatchupTeam = matchup.getFirst();
+                    MatchupTeam secondMatchupTeam = matchup.getSecond();
+                    Team firstTeam = teamRepo.getTeam(firstMatchupTeam.getTeamId());
+                    Team secondTeam = teamRepo.getTeam(secondMatchupTeam.getTeamId());
+                    SlackAttachment transactionAttachment = new SlackAttachment();
+                    transactionAttachment.setText("A new team is projected to win.");
+                    transactionAttachment.addField(firstTeam.getName(), format(firstMatchupTeam), true);
+                    transactionAttachment.addField(secondTeam.getName(), format(secondMatchupTeam), true);
+                    transactionAttachment.setColor("#39138C");
+
+                    preparedMessage = new SlackPreparedMessage.Builder()
+                            .withMessage("Win Projection Alert")
+                            .withUnfurl(false)
+                            .addAttachment(transactionAttachment)
+                            .build();
+                    break;
+                default:
+                    throw new IllegalArgumentException("Event type " + event.getType() + " is not supported");
+            }
+
+            LOGGER.info("Sending a message to Slack");
+            slackService.sendMessage(preparedMessage);
+        });
+    }
+
     @Scheduled(cron = "0 0 12 * * TUE")
     public void weeklyTrophyAlert() {
 
 
+    }
+
+    private String format(MatchupTeam team) {
+
+        StringBuilder builder = new StringBuilder();
+        NumberFormat percentFormat = NumberFormat.getPercentInstance();;
+        builder.append(percentFormat.format(team.getWinProbability()));
+        builder.append("% Chance To Win\n");
+        builder.append(team.getProjected());
+        builder.append(" Proj. Points\n");
+        builder.append(team.getScored());
+        builder.append(" Points Scored");
+
+        return builder.toString();
     }
 
     private String format(Map<Player, PlayerTransaction> players, boolean source) {
