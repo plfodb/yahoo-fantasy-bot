@@ -1,6 +1,7 @@
 package com.pldfodb.repo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Joiner;
 import com.pldfodb.model.Manager;
 import com.pldfodb.model.Team;
 import com.pldfodb.repo.rowmapper.TeamRowMapper;
@@ -49,7 +50,7 @@ public class TeamRepository {
 
     public List<Team> getTeams(List<Integer> teamIds) {
 
-        return jdbcTemplate.query("SELECT * FROM teams WHERE team_id = ANY(:teamIds)", new MapSqlParameterSource().addValue("teamIds", teamIds), new TeamRowMapper());
+        return jdbcTemplate.query("SELECT * FROM teams WHERE team_id = ANY(:teamIds::INTEGER[])", new MapSqlParameterSource().addValue("teamIds", "{" + Joiner.on(",").join(teamIds) + "}"), new TeamRowMapper());
     }
 
     private static final String TEAM_UPSERT_QUERY = "INSERT INTO teams VALUES (:id, :name, :clinchedPlayoffs, :managerId, :managerNickname) ON CONFLICT (team_id) DO UPDATE SET name = :name, clinched_playoffs = :clinchedPlayoffs, manager_id = :managerId, manager_nickname = :managerNickname";

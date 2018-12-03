@@ -69,7 +69,8 @@ public class AlertService {
                     Team firstTeam = teamRepo.getTeam(firstMatchupTeam.getTeamId());
                     Team secondTeam = teamRepo.getTeam(secondMatchupTeam.getTeamId());
                     SlackAttachment transactionAttachment = new SlackAttachment();
-                    transactionAttachment.setText("A new team is projected to win.");
+                    String winningTeam = firstMatchupTeam.getProjected() > secondMatchupTeam.getProjected() ? firstTeam.getName() : secondTeam.getName();
+                    transactionAttachment.setText(winningTeam + " is now projected to win!\n");
                     transactionAttachment.addField(firstTeam.getName(), format(firstMatchupTeam), true);
                     transactionAttachment.addField(secondTeam.getName(), format(secondMatchupTeam), true);
                     transactionAttachment.setColor("#39138C");
@@ -100,7 +101,7 @@ public class AlertService {
         StringBuilder builder = new StringBuilder();
         NumberFormat percentFormat = NumberFormat.getPercentInstance();;
         builder.append(percentFormat.format(team.getWinProbability()));
-        builder.append("% Chance To Win\n");
+        builder.append(" Chance To Win\n");
         builder.append(team.getProjected());
         builder.append(" Proj. Points\n");
         builder.append(team.getScored());

@@ -13,5 +13,5 @@ CREATE TABLE matchups (
 );
 
 ALTER TABLE teams ADD COLUMN clinched_playoffs BOOLEAN NOT NULL;
-ALTER TABLE teams ADD COLUMN manager_id BOOLEAN NOT NULL;
-ALTER TABLE teams ADD COLUMN manager_nickname BOOLEAN;
+ALTER TABLE teams ADD COLUMN manager_id INTEGER NOT NULL;
+ALTER TABLE teams ADD COLUMN manager_nickname TEXT;

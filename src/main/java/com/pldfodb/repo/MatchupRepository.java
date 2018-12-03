@@ -43,7 +43,7 @@ public class MatchupRepository {
 
     public List<Matchup> getLatestMatchups() {
 
-        return jdbcTemplate.query("SELECT * FROM matchups ORDER BY week DESC LIMIT 12", new MapSqlParameterSource(), new MatchupRowMapper());
+        return jdbcTemplate.query("SELECT * FROM matchups ORDER BY week DESC LIMIT 6", new MapSqlParameterSource(), new MatchupRowMapper());
     }
 
     public List<Matchup> getMatchups(int week) {

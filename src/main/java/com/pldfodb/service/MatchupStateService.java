@@ -32,7 +32,7 @@ public class MatchupStateService extends YahooOAuthService {
 
         setAuthentication();
         if (matchups == null) {
-            matchups = new TreeSet<>();
+            matchups = new HashSet<>();
             matchups.addAll(matchupRepo.getLatestMatchups());
         }
     }
@@ -57,7 +57,7 @@ public class MatchupStateService extends YahooOAuthService {
 
             Iterator<Matchup> updatedIt = updatedMatchups.iterator();
             Iterator<Matchup> it = matchups.iterator();
-            while (it.hasNext()) {
+            while (updatedIt.hasNext()) {
                 Matchup existing = it.next();
                 Matchup updated = updatedIt.next();
 

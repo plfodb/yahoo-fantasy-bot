@@ -29,9 +29,10 @@ public class TeamResource {
 
     @XmlElementWrapper(name = "managers")
     @XmlElement(name = "manager")
-    protected List<ManagerResource> managers = new ArrayList<>();
+    protected List<ManagerResource> managerResources = new ArrayList<>();
 
     public Team getTeam() {
-        return new Team(teamId, name, clinchedPlayoffs > 0 ? true : false, managers.stream().map(ManagerResource::getManager).collect(Collectors.toList()));
+        List<Manager> managers = managerResources.stream().map(ManagerResource::getManager).collect(Collectors.toList());
+        return new Team(teamId, name, clinchedPlayoffs != null && clinchedPlayoffs > 0 ? true : false, managers);
     }
 }
