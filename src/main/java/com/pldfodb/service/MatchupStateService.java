@@ -51,6 +51,11 @@ public class MatchupStateService extends YahooOAuthService {
         Set<Matchup> updatedMatchups = updatedMatchupResources.stream().map(MatchupResource::getMatchup).collect(Collectors.toSet());
         List<Team> teams = updatedMatchupResources.stream().map(MatchupResource::getTeams).flatMap(t -> t.stream()).collect(Collectors.toList());
         teamRepo.saveTeams(teams);
+        matchupRepo.saveMatchups(updatedMatchups);
+
+        if (matchups.isEmpty())
+            throw new IllegalStateException("Matchup cache is not initialized, restart");
+
         if (!matchups.equals(updatedMatchups)) {
 
             LOGGER.info("Matchups changed");
@@ -80,7 +85,6 @@ public class MatchupStateService extends YahooOAuthService {
     public List<MatchupStateChangeEvent> consumeEvents() {
 
         List<MatchupStateChangeEvent> eventsCopy = ImmutableList.copyOf(events);
-        matchupRepo.saveMatchups(events.stream().map(MatchupStateChangeEvent::getMatchup).collect(Collectors.toSet()));
         int eventCount = events.size();
         events.clear();
         if (eventCount > 0)
