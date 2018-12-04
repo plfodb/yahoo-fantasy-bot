@@ -1,10 +1,11 @@
 ## Dependencies
 
-- Java 8
+- Java 8 (JDK 8)
 - Maven
 - Docker
 - Docker Compose
 - Postgres (Optional)
+- Lombok plugin for your IDE
 
 ## Build
 
@@ -24,7 +25,11 @@ Ask Bryan to send you the creds. Fill in the creds in the new `.properties` file
 
 `mvn clean install`
 
+from the root directory of the project
+
 ### Build Docker Image
+
+Start Docker by opening the application and then run:
 
 `docker-compose build`
 
