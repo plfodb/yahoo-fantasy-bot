@@ -1,6 +1,7 @@
 package com.pldfodb.service;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 import com.pldfodb.controller.model.yahoo.MatchupResource;
 import com.pldfodb.model.Matchup;
 import com.pldfodb.model.Team;
@@ -34,7 +35,8 @@ public class MatchupStateService extends YahooOAuthService {
         if (matchups == null) {
             matchups = new HashSet<>();
             matchups.addAll(matchupRepo.getLatestMatchups());
-            LOGGER.info("Loaded " + matchups.size() + " matchups from the db");
+            LOGGER.info("Initializing matchup cache from db");
+            LOGGER.info("Loaded " + matchups.size() + " matchups");
         }
     }
 
@@ -54,12 +56,16 @@ public class MatchupStateService extends YahooOAuthService {
         teamRepo.saveTeams(teams);
         matchupRepo.saveMatchups(updatedMatchups);
 
-        if (matchups.isEmpty())
-            throw new IllegalStateException("Matchup cache is not initialized, restart");
+        if (matchups.isEmpty()) {
+            LOGGER.info("Initializing matchup cache from Yahoo");
+            matchups.addAll(updatedMatchups);
+            return;
+        }
 
         if (!matchups.equals(updatedMatchups)) {
 
-            LOGGER.info("Matchups changed");
+            LOGGER.info("Changed matchups:");
+            Sets.symmetricDifference(matchups, updatedMatchups).stream().forEach(matchup -> LOGGER.info(matchup.toString()));
 
             Iterator<Matchup> updatedIt = updatedMatchups.iterator();
             Iterator<Matchup> it = matchups.iterator();

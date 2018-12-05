@@ -1,13 +1,11 @@
 package com.pldfodb.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 public class MatchupTeam {
 
     @NonNull private Integer teamId;
