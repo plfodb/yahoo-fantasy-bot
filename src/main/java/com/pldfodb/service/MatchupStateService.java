@@ -34,10 +34,11 @@ public class MatchupStateService extends YahooOAuthService {
         if (matchups == null) {
             matchups = new HashSet<>();
             matchups.addAll(matchupRepo.getLatestMatchups());
+            LOGGER.info("Loaded " + matchups.size() + " matchups from the db");
         }
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 30000)
     public void updateMatchups() throws IOException {
 
         if (yahooClient == null) {
