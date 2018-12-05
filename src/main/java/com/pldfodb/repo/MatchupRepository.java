@@ -43,7 +43,7 @@ public class MatchupRepository {
 
     public List<Matchup> getLatestMatchups() {
 
-        return jdbcTemplate.query("SELECT * FROM matchups ORDER BY week DESC LIMIT 6", new MapSqlParameterSource(), new MatchupRowMapper());
+        return jdbcTemplate.query(LATEST_MATCHUPS_QUERY, new MapSqlParameterSource(), new MatchupRowMapper());
     }
 
     public List<Matchup> getMatchups(int week) {
@@ -54,4 +54,16 @@ public class MatchupRepository {
     private static final String MATCHUP_UPSERT_QUERY = "INSERT INTO matchups VALUES (:week, :playoffs, :firstTeamId, :firstTeamScored, :firstTeamProjected, :firstTeamProbability, :secondTeamId, :secondTeamScored, :secondTeamProjected, :secondTeamProbability)" +
             "ON CONFLICT (week, first_team_id, second_team_id)" +
             " DO UPDATE SET playoffs = :playoffs, first_team_scored = :firstTeamScored, first_team_projected = :firstTeamProjected, first_team_probability = :firstTeamProbability, second_team_scored = :secondTeamScored, second_team_projected = :secondTeamProjected, second_team_probability = :secondTeamProbability";
+
+    private static final String LATEST_MATCHUPS_QUERY =
+            "WITH latest_week AS (" +
+            "    SELECT week" +
+            "    FROM matchups" +
+            "    GROUP BY week" +
+            "    ORDER BY week DESC" +
+            "    LIMIT 1" +
+            ")" +
+            "SELECT *" +
+            "FROM matchups" +
+            "    JOIN latest_week USING (week)";
 }
