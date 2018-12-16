@@ -64,6 +64,7 @@ public class AlertService {
             switch (event.getType()) {
                 case WIN_PROJECTION:
                     matchup = event.getMatchup();
+                    LOGGER.info("Sending a message for matchup: " + matchup.toString());
                     MatchupTeam firstMatchupTeam = matchup.getFirst();
                     MatchupTeam secondMatchupTeam = matchup.getSecond();
                     Team firstTeam = teamRepo.getTeam(firstMatchupTeam.getTeamId());
