@@ -81,7 +81,7 @@ public class MatchupStateService extends YahooOAuthService {
                 double updatedProbabilityDelta = updated.getFirst().getWinProbability() - updated.getSecond().getWinProbability();
 
                 // if the deltas have different signs there was a lead change in win probability
-                if ((oldProbabilityDelta > 0) != (updatedProbabilityDelta > 0))
+                if ((oldProbabilityDelta > 0.00) != (updatedProbabilityDelta > 0.00))
                     events.add(new WinProjectionEvent(updated));
             }
             matchups.clear();
