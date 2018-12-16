@@ -1,2 +1,3 @@
 token=<token>
-channel=yahoo-bot-testing
+channel.main=yahoo-bot-testing
+channel.matchups=yahoo-bot-testing
