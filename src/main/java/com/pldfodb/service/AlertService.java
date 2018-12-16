@@ -69,8 +69,15 @@ public class AlertService {
                     Team firstTeam = teamRepo.getTeam(firstMatchupTeam.getTeamId());
                     Team secondTeam = teamRepo.getTeam(secondMatchupTeam.getTeamId());
                     SlackAttachment transactionAttachment = new SlackAttachment();
-                    String winningTeam = firstMatchupTeam.getProjected() > secondMatchupTeam.getProjected() ? firstTeam.getName() : secondTeam.getName();
-                    transactionAttachment.setText(winningTeam + " is now projected to win!\n");
+                    String message;
+                    if (firstMatchupTeam.getWinProbability() == secondMatchupTeam.getWinProbability()) {
+                        message = firstTeam.getName() + " and " + secondTeam.getName() + " now have an equal chance to win!\n";
+                    }
+                    else {
+                        String winningTeam = firstMatchupTeam.getWinProbability() > secondMatchupTeam.getWinProbability() ? firstTeam.getName() : secondTeam.getName();
+                        message = winningTeam + " is now projected to win!\n";
+                    }
+                    transactionAttachment.setText(message);
                     transactionAttachment.addField(firstTeam.getName(), format(firstMatchupTeam), true);
                     transactionAttachment.addField(secondTeam.getName(), format(secondMatchupTeam), true);
                     transactionAttachment.setColor("#39138C");
