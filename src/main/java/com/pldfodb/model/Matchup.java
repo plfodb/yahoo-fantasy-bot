@@ -19,8 +19,9 @@ public class Matchup implements Comparable<Matchup> {
 
         return ComparisonChain.start()
                 .compare(week, o.week)
-                .compare(first.getTeamId(), o.first.getTeamId())
-                .compare(second.getTeamId(), o.second.getTeamId())
+                .compare(playoffs, playoffs)
+                .compare(first, o.first)
+                .compare(second, o.second)
                 .result();
     }
 }

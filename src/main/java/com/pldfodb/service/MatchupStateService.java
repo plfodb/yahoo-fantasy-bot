@@ -77,11 +77,11 @@ public class MatchupStateService extends YahooOAuthService {
                 if (existing.getWeek() != updated.getWeek())
                    break;
 
-                double oldProjectionDelta = existing.getFirst().getProjected() - existing.getSecond().getProjected();
-                double updatedProjectionDelta = updated.getFirst().getProjected() - updated.getSecond().getProjected();
+                double oldProbabilityDelta = existing.getFirst().getWinProbability() - existing.getSecond().getWinProbability();
+                double updatedProbabilityDelta = updated.getFirst().getWinProbability() - updated.getSecond().getWinProbability();
 
                 // if the deltas have different signs there was a lead change in win probability
-                if ((oldProjectionDelta > 0) != (updatedProjectionDelta > 0))
+                if ((oldProbabilityDelta > 0) != (updatedProbabilityDelta > 0))
                     events.add(new WinProjectionEvent(updated));
             }
             matchups.clear();
