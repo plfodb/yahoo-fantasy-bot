@@ -27,7 +27,7 @@ public class SlackController {
     @PostMapping(value = "/messages")
     public @ResponseBody void sendMessage(@RequestBody String message) {
 
-        slackService.sendMessage(message);
+        slackService.sendMessage(message, SlackService.ChannelType.MAIN);
     }
 
     @PostMapping("/alerts/transactions")

@@ -4,7 +4,6 @@ import com.ullink.slack.simpleslackapi.SlackChannel;
 import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,8 +19,11 @@ public class SlackConfig {
     @Value("${token}")
     private String token;
 
-    @Value("${channel}")
-    private String channel;
+    @Value("${channel.main}")
+    private String mainChannel;
+
+    @Value("${channel.matchups}")
+    private String matchupsChannel;
 
     @Bean
     public SlackSession slackSession() throws IOException {
@@ -30,8 +32,13 @@ public class SlackConfig {
         return session;
     }
 
-    @Bean
-    public SlackChannel slackChannel() throws IOException {
-         return slackSession().findChannelByName(channel);
+    @Bean(name = "MAIN_CHANNEL")
+    public SlackChannel mainSlackChannel() throws IOException {
+         return slackSession().findChannelByName(mainChannel);
+    }
+
+    @Bean(name = "MATCHUPS_CHANNEL")
+    public SlackChannel matchupsSlackChannel() throws IOException {
+        return slackSession().findChannelByName(matchupsChannel);
     }
 }

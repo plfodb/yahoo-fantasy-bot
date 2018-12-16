@@ -49,7 +49,7 @@ public class AlertService {
                     .build();
 
             LOGGER.info("Sending a message to Slack");
-            slackService.sendMessage(preparedMessage);
+            slackService.sendMessage(preparedMessage, SlackService.ChannelType.MAIN);
         });
     }
 
@@ -93,7 +93,7 @@ public class AlertService {
             }
 
             LOGGER.info("Sending a message to Slack");
-            slackService.sendMessage(preparedMessage);
+            slackService.sendMessage(preparedMessage, SlackService.ChannelType.MATCHUPS);
         });
     }
 
