@@ -33,7 +33,7 @@ public class MatchupStateService extends YahooOAuthService {
 
         setAuthentication();
         if (matchups == null) {
-            matchups = new HashSet<>();
+            matchups = new TreeSet<>();
             matchups.addAll(matchupRepo.getLatestMatchups());
             LOGGER.info("Initializing matchup cache from db");
             LOGGER.info("Loaded " + matchups.size() + " matchups");
