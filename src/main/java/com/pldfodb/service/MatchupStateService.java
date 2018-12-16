@@ -51,7 +51,7 @@ public class MatchupStateService extends YahooOAuthService {
         initialize();
 
         List<MatchupResource> updatedMatchupResources = yahooClient.getMatchups();
-        Set<Matchup> updatedMatchups = updatedMatchupResources.stream().map(MatchupResource::getMatchup).collect(Collectors.toSet());
+        Set<Matchup> updatedMatchups = updatedMatchupResources.stream().map(MatchupResource::getMatchup).collect(Collectors.toCollection(TreeSet::new));
         List<Team> teams = updatedMatchupResources.stream().map(MatchupResource::getTeams).flatMap(t -> t.stream()).collect(Collectors.toList());
         teamRepo.saveTeams(teams);
         matchupRepo.saveMatchups(updatedMatchups);
