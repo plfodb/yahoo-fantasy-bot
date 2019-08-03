@@ -64,7 +64,7 @@ public class AlertService {
             switch (event.getType()) {
                 case WIN_PROJECTION:
                     matchup = event.getMatchup();
-                    LOGGER.info("Sending a message for matchup: " + matchup.toString());
+                    LOGGER.info("Building a message for matchup: " + matchup.toString());
                     MatchupTeam firstMatchupTeam = matchup.getFirst();
                     MatchupTeam secondMatchupTeam = matchup.getSecond();
                     Team firstTeam = teamRepo.getTeam(firstMatchupTeam.getTeamId());
@@ -72,7 +72,8 @@ public class AlertService {
                     SlackAttachment transactionAttachment = new SlackAttachment();
                     String message;
                     if (firstMatchupTeam.getWinProbability() == secondMatchupTeam.getWinProbability()) {
-                        message = firstTeam.getName() + " and " + secondTeam.getName() + " now have an equal chance to win!\n";
+                        LOGGER.info("Win probabilities are equal, ignoring until one team takes the lead");
+                        return;
                     }
                     else {
                         String winningTeam = firstMatchupTeam.getWinProbability() > secondMatchupTeam.getWinProbability() ? firstTeam.getName() : secondTeam.getName();
