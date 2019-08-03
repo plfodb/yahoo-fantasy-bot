@@ -58,6 +58,8 @@ Example JWT payload:
 
 `{"sub": "btrujillo","name": "Bryan Trujillo","iat": 1516239022,"exp": 1514793600}`
 
+https://github.com/mike-engel/jwt-cli works pretty well for this.
+
 ### Yahoo
 
 #### Endpoints utitlizing `YahooClient`
